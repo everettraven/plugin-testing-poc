@@ -45,7 +45,7 @@ func WithStdin(stdin io.Reader) GenericCommandContextOption {
 
 func NewGenericCommandContext(opts ...GenericCommandContextOption) *GenericCommandContext {
 	gcc := &GenericCommandContext{
-		dir:   "test",
+		dir:   "",
 		stdin: os.Stdin,
 	}
 
@@ -60,8 +60,10 @@ func (gcc *GenericCommandContext) Run(cmd *exec.Cmd, path ...string) ([]byte, er
 
 	dir := strings.Join(append([]string{gcc.dir}, path...), "/")
 	// make the directory if it does not already exist
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		os.MkdirAll(dir, 0755)
+	if dir != "" {
+		if _, err := os.Stat(dir); os.IsNotExist(err) {
+			os.MkdirAll(dir, 0755)
+		}
 	}
 
 	cmd.Dir = dir

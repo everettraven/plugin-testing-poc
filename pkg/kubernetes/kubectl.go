@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"encoding/json"
+	"fmt"
 	"os/exec"
 
 	"github.com/everettraven/plugin-testing-poc/pkg/command"
@@ -117,16 +118,19 @@ func (ku *KubectlUtil) Version() (KubernetesVersion, error) {
 
 	var versions map[string]json.RawMessage
 
-	json.Unmarshal([]byte(out), versions)
+	err = json.Unmarshal([]byte(out), &versions)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshalling json: %w", err)
+	}
 
 	clientVersion, err := NewKubeVersionInfo(string(versions["clientVersion"]))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error getting client version: %w", err)
 	}
 
 	serverVersion, err := NewKubeVersionInfo(string(versions["serverVersion"]))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error getting server version: %w", err)
 	}
 
 	return NewKubeVersion(WithClientVersion(clientVersion), WithServerVersion(serverVersion)), nil

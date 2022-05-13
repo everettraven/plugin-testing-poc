@@ -6,10 +6,6 @@ import (
 	"github.com/everettraven/plugin-testing-poc/pkg/samples"
 )
 
-type Generator interface {
-	GenerateSamples(samples ...samples.Sample) error
-}
-
 type GenericGenerator struct {
 	init    bool
 	api     bool

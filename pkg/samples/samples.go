@@ -12,6 +12,7 @@ import (
 type Sample interface {
 	CommandContext() command.CommandContext
 	Name() string
+	GVK() schema.GroupVersionKind
 	GenerateInit() error
 	GenerateApi() error
 	GenerateWebhook() error
@@ -138,8 +139,11 @@ func (gs *GenericSample) Name() string {
 	return gs.name
 }
 
-func (gs *GenericSample) GenerateInit() error {
+func (gs *GenericSample) GVK() schema.GroupVersionKind {
+	return gs.gvk
+}
 
+func (gs *GenericSample) GenerateInit() error {
 	options := []string{
 		"init",
 		"--plugins",
